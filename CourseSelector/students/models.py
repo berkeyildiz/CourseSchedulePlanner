@@ -5,7 +5,7 @@ from lxml import html
 from datetime import datetime
 import requests
 import random
-
+from schedule.models import Schedule
 class UserManager(BaseUserManager):
 
     def _create_user(self, username, password, **extra_fields):
@@ -96,7 +96,7 @@ class OpenCourses(models.Model):
     long_name = models.CharField(max_length=150)
     credit = models.CharField(max_length=10, null=True)
     instructor = models.CharField(max_length=100, null=True)
-    schedule = models.CharField(max_length=10)
+    day_hour = models.CharField(max_length=10, null=True)
     room = models.CharField(max_length=100)
     campus = models.CharField(max_length=20)
     prereq = models.CharField(max_length=10, null=True, default='girilmemis')
@@ -122,10 +122,11 @@ class AllOpenCourses(OpenCourses):
                     long_name       = tr_elements[i][1].text_content(),
                     credit          = tr_elements[i][3].text_content(),
                     instructor      = tr_elements[i][4].text_content(),
-                    schedule        = tr_elements[i][5].text_content(),
+                    day_hour        = tr_elements[i][5].text_content(),
                     room            = tr_elements[i][6].text_content(),
                     campus          = tr_elements[i][7].text_content()
                     )
+                    print(obj.day_hour)
                     obj.save()
 
     def __str__(self):
@@ -135,7 +136,7 @@ class OpenCoursesForYou(OpenCourses):
     student = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     grade = models.CharField(max_length=5, null=True, default=None)
     elective = models.CharField(max_length=25, null=True, default=None)
-
+    schedule = models.ManyToManyField(Schedule, default=None)
     def __str__(self):
         return self.student.username+" "+self.short_name
 
@@ -270,7 +271,7 @@ def sublist(user, electives_not_finished, url, s):
                         long_name       = i["long_name"],
                         credit          = i["credit"],
                         instructor      = i["instructor"],
-                        schedule        = i["schedule"],
+                        day_hour        = i["day_hour"],
                         room            = i["room"],
                         campus          = i["campus"],
                         elective        = item,
@@ -294,7 +295,7 @@ def sublist(user, electives_not_finished, url, s):
                     long_name       = i["long_name"],
                     credit          = i["credit"],
                     instructor      = i["instructor"],
-                    schedule        = i["schedule"],
+                    day_hour        = i["day_hour"],
                     room            = i["room"],
                     campus          = i["campus"],
                     grade           = Courses.objects.get(student=user, short_name=i["short_name"]).grade
