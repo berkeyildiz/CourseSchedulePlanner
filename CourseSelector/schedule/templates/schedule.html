@@ -11,8 +11,34 @@
 <style>
 
 body {
-  font-family: "Lato", sans-serif;
+
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
+#header {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 50px;
+    background-color: red;
+}
+#navbar {
+  overflow: hidden;
+  background-color: #333;
+}
+#navbar a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+}
+.content {
+  padding: 16px;
+}
+
 
 /* Fixed sidenav, full height */
 .sidenav {
@@ -52,12 +78,20 @@ body {
   margin-left: 200px; /* Same as the
   width of the sidenav */
   font-size: 20px; /* Increased text to enable scrolling */
-  padding: 0px 10px;
+  padding-bottom: 10%;
+  padding-left: 50px;
+  padding-top:85fpx;
+
 }
 
 /* Add an active class to the active dropdown button */
 .active {
   background-color: green;
+  color: white;
+
+}
+.active {
+  background-color: #4CAF50;
   color: white;
 }
 
@@ -83,63 +117,104 @@ body {
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
+
+}
+.topnav .icon {
+  display: none;
+}
+@media screen and (max-width: 600px) {
+  .topnav a:not(:first-child) {display: none;}
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .topnav.responsive {position: relative;}
+  .topnav.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+ .sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.sticky + .content {
+  padding-top: 60px;
 }
 </style>
 </head>
 <body>
 
+<div id="navbar">
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">WebSiteName</a>
+      <a class="navbar-brand" href=""> WELCOME {{ request.user.name }}</a>
     </div>
     <ul class="nav navbar-nav">
       <li class="active"><a href="#">Home</a></li>
-      <li><a href="#">Page 1</a></li>
+      <li><a href="/about/">Details</a></li>
       <li><a href="#">Page 2</a></li>
       <li><a href="#">Page 3</a></li>
     </ul>
   </div>
 </nav>
-
+</div>
 <div class="sidenav">
-{% for f in deps %}
-  <button class="coursedown-btn">{{f}}
+
+  <button class="coursedown-btn">OpenForYou
     <i class="fa fa-caret-down"></i>
   </button>
 
  <div class="coursedown-container">
 
-{% for o in opens %}
+{% for o in courses %}
       {% if o.elective == f and o.section.1 == '1' and grade == None %}
-        <a id='name' name="name" value="{{o.short_name}}">{{o.short_name}} {{o.long_name}} {{o.instructor}} </a>
+        <a id='name' name="name" value="{{o.short_name}}">{{o.short_name}} {{o.long_name}} {{o.instructor}} {{o.day_hour}}</a>
       {% csrf_token %}
         <input type="button" name='name' value="{{o.short_name}}" class="button">
   {% endif %}
       {% endfor %}
-  {% endfor %}
+
 
   </div>
 
 
 
 
-  <button class="dropdown-btn">Dropdown
+  <button class="dropdown-btn">Dep
     <i class="fa fa-caret-down"></i>
   </button>
 
  <div class="dropdown-container">
 
+     {% for o in dep %}
+
+        <a id='depname' name="depname" value="{{o.short_name}}">{{o.short_name}} {{o.long_name}} {{o.instructor}} {{o.day_hour}}</a>
+      {% csrf_token %}
+        <input type="button" name='depname' value="{{o.short_name}}" class="button">
+
+      {% endfor %}
+
   </div>
 
 </div>
 
-<div class="main">
-  <h2>Course Schedule Planner </h2>
-   <table border=1 cellspacing="0" width="	800" height="400" id="schedule_table">
+<div class="main" style="overflow-x:auto;" >
 
+   <table border=1 cellspacing="0" width="	800" height="400" id="schedule_table">
+ <h2>Course Schedule Planner </h2>
 <tr>
+ <th> </th>
  <th colspan="9" > Time Table </th>
+
+
 </tr>
 
 <tr>
@@ -158,71 +233,70 @@ body {
 <tr>
 
 <th> Mon</th>
-    <td id="M1">  </td>
-    <td id="M2">  </td>
-    <td id="M3">  </td>
-    <td id="M4">  </td>
-    <td id="M5">  </td>
-    <td id="M6">  </td>
-    <td id="M7">  </td>
-    <td id="M8">  </td>
+    <td id="M1"><ol id="M1menu"> </ol>   </td>
+    <td id="M2"><ol id="M2menu"> </ol>   </td>
+    <td id="M3"><ol id="M3menu"> </ol>   </td>
+    <td id="M4"><ol id="M4menu"> </ol>   </td>
+    <td id="M5"><ol id="M5menu"> </ol>   </td>
+    <td id="M6"><ol id="M6menu"> </ol>   </td>
+    <td id="M7"><ol id="M7menu"> </ol>   </td>
+    <td id="M8"><ol id="M8menu"> </ol>   </td>
 
 </tr>
-
+{% for schedule in schedule %}
 <tr>
 
 <th> Tue</th>
-    <td id="T1">  </td>
-    <td id="T2">  </td>
-    <td id="T3">  </td>
-    <td id="T4">  </td>
-    <td id="T5">  </td>
-    <td id="T6">  </td>
-    <td id="T7">  </td>
-    <td id="T8">  </td>
+    <td id="T1"><ol id="T1menu">{% if "T1" in schedule.place_in_schedule %}<li>{{schedule.short_name}} </li> {% endif %} </ol>   </td>
+    <td id="T2"><ol id="T2menu">{% if "T2" in schedule.place_in_schedule %}<li>{{schedule.short_name}}</li> {% endif %} </ol>   </td>
+    <td id="T3"><ol id="T3menu">{% if "T3" in schedule.place_in_schedule %}<li>{{schedule.short_name}} </li> {% endif %}</ol>   </td>
+    <td id="T4"><ol id="T4menu">{% if "T4" in schedule.place_in_schedule %}<li>{{schedule.short_name}}</li>  {% endif %}</ol>   </td>
+    <td id="T5"><ol id="T5menu">{% if "T5" in schedule.place_in_schedule %}<li>{{schedule.short_name}}</li>{% endif %} </ol> </td>
+    <td id="T6"><ol id="T6menu">{% if "T6" in schedule.place_in_schedule %}<li>{{schedule.short_name}}</li>  {% endif %}</ol>  </td>
+    <td id="T7"><ol id="T7menu">{% if "T7" in schedule.place_in_schedule %}<li>{{schedule.short_name}}</li> {% endif %} </ol>  </td>
+    <td id="T8"><ol id="T8menu">{% if "T8" in schedule.place_in_schedule %}<li>{{schedule.short_name}}</li> {% endif %} </ol></td>
 
 </tr>
-
+{% endfor %}
 
 <tr>
 
 <th> Wend</th>
-    <td id="W1">  </td>
-    <td id="W2">  </td>
-    <td id="W3">  </td>
-    <td id="W4">  </td>
-    <td id="W5">  </td>
-    <td id="W6">  </td>
-    <td id="W7">  </td>
-    <td id="W8">  </td>
+    <td id="W1"><ol id="W1menu"> </ol>   </td>
+    <td id="W2"><ol id="W2menu"> </ol>   </td>
+    <td id="W3"><ol id="W3menu"> </ol>   </td>
+    <td id="W4"><ol id="W4menu"> </ol>   </td>
+    <td id="W5"><ol id="W5menu"> </ol>   </td>
+    <td id="W6"><ol id="W6menu"> </ol>  </td>
+    <td id="W7"><ol id="W7menu"> </ol>  </td>
+    <td id="W8"><ol id="W8menu"> </ol>   </td>
 
 </tr>
 
 <tr>
 
 	<th> Thr</th>
-	<td>  </td>
-    <td id="Th1">  </td>
-    <td id="Th2">  </td>
-    <td id="Th3">  </td>
-    <td id="Th4">  </td>
-    <td id="Th5">  </td>
-    <td id="Th6">  </td>
-    <td id="Th7">  </td>
-    <td id="Th8">  </td>
+    <td id="Th1"><ol id="Th1menu"> </ol>   </td>
+    <td id="Th2"><ol id="Th2menu"> </ol>   </td>
+    <td id="Th3"><ol id="Th3menu"> </ol>   </td>
+    <td id="Th4"><ol id="Th4menu"> </ol>   </td>
+    <td id="Th5"><ol id="Th5menu"> </ol>   </td>
+    <td id="Th6"><ol id="Th6menu"> </ol>   </td>
+    <td id="Th7"><ol id="Th7menu"> </ol>   </td>
+    <td id="Th8"><ol id="Th8menu"> </ol>   </td>
 </tr>
 
 <tr>
 
 <th> Fri</th>
-	<td id="F1">  </td>
-    <td id="F2">  </td>
-    <td id="F3">  </td>
-    <td id="F4">  </td>
-    <td id="F5">  </td>
-    <td id="F6">  </td>
-    <td id="F7">  </td>
-    <td id="F8">  </td>
+	<td id="F1"><ol id="F1menu"> </ol>   </td>
+    <td id="F2"><ol id="F2menu"> </ol>   </td>
+    <td id="F3"><ol id="F3menu"> </ol>   </td>
+    <td id="F4"><ol id="F4menu"> </ol>   </td>
+    <td id="F5"><ol id="F5menu"> </ol>   </td>
+    <td id="F6"><ol id="F6menu"> </ol>   </td>
+    <td id="F7"><ol id="F7menu"> </ol>   </td>
+    <td id="F8"><ol id="F8menu"> </ol>   </td>
 
 </tr>
 
@@ -296,12 +370,25 @@ for (t = 0; t < coursedown.length; t++) {
   }
   });
 }
+window.onscroll = function() {myFunction()};
 
+var navbar = document.getElementById("navbar");
+var sticky = navbar.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky")
+  } else {
+    navbar.classList.remove("sticky");
+  }
+}
 
 
 </script>
 {% block script %}
     <script type="text/javascript">
+
+
 
 $('.coursedown-container').on('click', '.button', function (){
 
@@ -314,62 +401,158 @@ $('.coursedown-container').on('click', '.button', function (){
                 url: '{% url 'schedule:update_schedule' %}',
                 type: 'POST',
                 data: {
-                    'name': value,
+                    'short_name': value,
                 },
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
 
-                    //MONDAY
+
+                    schedule_available();
+
+                      function control_day_hour(place){
+                          var num =$('#'+place+'menu').find("li").length;
+                           alert("num::"+num);
+
+                          if($("#"+place+"menu:contains("+value+")").length>0){
+                                alert("you have already added it  ");
+                                return false;
+                            }if (num > 1 ) {
+                                    alert("you can not take 3 courses for same place ");
+                                    return false;
+                              }
+
+                              else {
+                              alert("başarılı");
+                              alert("ders eklenebilir");
+                              return true;
+
+                           }
+                      }
+
+                      function schedule_available(){
+
+
+                      var course_days_and_hour_arr = [];
+
+                      //MONDAY
+
 
                     if(data.place_in_schedule.includes('M1')){
-                       $( '#M1' ).text(value);
+                       if(control_day_hour("M1")==true){
+                        course_days_and_hour_arr.push("M1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('M2')){
-                       $( '#M2' ).text(value);
+                        if(control_day_hour("M2")==true){
+                        course_days_and_hour_arr.push("M2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('M3')){
-                       $( '#M3' ).text(value);
+
+                        if(control_day_hour("M3")==true){
+
+                        course_days_and_hour_arr.push("M3");
+                       }else{
+
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('M4')){
-                       $( '#M4' ).text(value);
+                        if(control_day_hour("M4")==true){
+                        course_days_and_hour_arr.push("M4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('M5')){
-                       $( '#M5' ).text(value);
+                        if(control_day_hour("M5")==true){
+                        course_days_and_hour_arr.push("M5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
-                     if(data.place_in_schedule.includes('M6')){
-                       $( '#M6' ).text(value);
+                     if(data.place_in_schedule.includes('M6') ){
+                        if(control_day_hour("M6")==true){
+                        course_days_and_hour_arr.push("M6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('M7')){
-                       $( '#M7' ).text(value);
+                       if(control_day_hour("M7")==true){
+                        course_days_and_hour_arr.push("M7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }if(data.place_in_schedule.includes('M8')){
-                       $( '#M8' ).text(value);
+                        if(control_day_hour("M8")==true){
+                        course_days_and_hour_arr.push("M8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
 
 
                      //TUESDAY
                        if(data.place_in_schedule.includes('T1')){
-                       $( '#T1' ).text(value);
+                       if(control_day_hour("T1")==true){
+                        course_days_and_hour_arr.push("T1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('T2')){
-                       $( '#T2' ).text(value);
+                        if(control_day_hour("T2")==true){
+                        course_days_and_hour_arr.push("T2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('T3')){
-                       $( '#T3' ).text(value);
+                        if(control_day_hour("T3")==true){
+                        course_days_and_hour_arr.push("T3");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('T4')){
-                       $( '#T4' ).text(value);
+                        if(control_day_hour("T4")==true){
+                        course_days_and_hour_arr.push("T4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('T5')){
-                       $( '#T5' ).text(value);
+                        if(control_day_hour("T5")==true){
+                        course_days_and_hour_arr.push("T5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('T6')){
-                       $( '#T6' ).text(value);
+                        if(control_day_hour("T6")==true){
+                        course_days_and_hour_arr.push("T6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('T7')){
-                       $( '#T7' ).text(value);
+                       if(control_day_hour("T7")==true){
+                        course_days_and_hour_arr.push("T7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }if(data.place_in_schedule.includes('T8')){
-                       $( '#T8' ).text(value);
+                        if(control_day_hour("T8")==true){
+                        course_days_and_hour_arr.push("T8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
 
 
@@ -377,82 +560,616 @@ $('.coursedown-container').on('click', '.button', function (){
                      //WEDNESDAY
 
                        if(data.place_in_schedule.includes('W1')){
-                       $( '#W1' ).text(value);
+                        if(control_day_hour("W1")==true){
+                        course_days_and_hour_arr.push("W1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('W2')){
-                       $( '#W2' ).text(value);
+                        if(control_day_hour("W2")==true){
+                        course_days_and_hour_arr.push("W2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('W3')){
-                       $( '#W3' ).text(value);
+                       if(control_day_hour("W3")==true){
+                        course_days_and_hour_arr.push("W3");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('W4')){
-                       $( '#W4' ).text(value);
+                       if(control_day_hour("W4")==true){
+                        course_days_and_hour_arr.push("W4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('W5')){
-                       $( '#W5' ).text(value);
+                        if(control_day_hour("W5")==true){
+                        course_days_and_hour_arr.push("W5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
+
                      if(data.place_in_schedule.includes('W6')){
-                       $( '#W6' ).text(value);
+                        if(control_day_hour("W6")==true){
+                        course_days_and_hour_arr.push("W6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('W7')){
-                       $( '#W7' ).text(value);
+                        if(control_day_hour("W7")==true){
+                        course_days_and_hour_arr.push("W7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+
                      }if(data.place_in_schedule.includes('W8')){
-                       $( '#W8' ).text(value);
+                         if(control_day_hour("W8")==true){
+                        course_days_and_hour_arr.push("W8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+
+
                      }
 
 
                       //TH
 
                        if(data.place_in_schedule.includes('Th1')){
-                       $( '#Th1' ).text(value);
+                        if(control_day_hour("Th1")==true){
+                        course_days_and_hour_arr.push("Th1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('Th2')){
-                       $( '#Th2' ).text(value);
+                        if(control_day_hour("Th2")==true){
+                        course_days_and_hour_arr.push("Th2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('Th3')){
-                       $( '#Th3' ).text(value);
+                        if(control_day_hour("Th3")==true){
+                        course_days_and_hour_arr.push("Th3");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('Th4')){
-                       $( '#Th4' ).text(value);
+                       if(control_day_hour("Th4")==true){
+                        course_days_and_hour_arr.push("Th4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('Th5')){
-                       $( '#Th5' ).text(value);
+                        if(control_day_hour("Th5")==true){
+                        course_days_and_hour_arr.push("Th5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('Th6')){
-                       $( '#Th6' ).text(value);
+                        if(control_day_hour("Th6")==true){
+                        course_days_and_hour_arr.push("Th6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('Th7')){
-                       $( '#Th7' ).text(value);
+                        if(control_day_hour("Th7")==true){
+                        course_days_and_hour_arr.push("Th7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }if(data.place_in_schedule.includes('Th8')){
-                       $( '#Th8' ).text(value);
+                        if(control_day_hour("Th8")==true){
+                        course_days_and_hour_arr.push("Th8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
 
                       //FRIDAY
 
                        if(data.place_in_schedule.includes('F1')){
-                       $( '#F1' ).text(value);
+                        if(control_day_hour("F1")==true){
+                        course_days_and_hour_arr.push("F1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('F2')){
-                       $( '#F2' ).text(value);
+                        if(control_day_hour("F2")==true){
+                        course_days_and_hour_arr.push("F2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('F3')){
-                       $( '#F3' ).text(value);
+                        if(control_day_hour("F3")==true){
+                        course_days_and_hour_arr.push("F3");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('F4')){
-                       $( '#F4' ).text(value);
+                        if(control_day_hour("F4")==true){
+                        course_days_and_hour_arr.push("F4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('F5')){
-                       $( '#F5' ).text(value);
+                        if(control_day_hour("F5")==true){
+                        course_days_and_hour_arr.push("F5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('F6')){
-                       $( '#F6' ).text(value);
+                       if(control_day_hour("F6")==true){
+                        course_days_and_hour_arr.push("F6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
                      if(data.place_in_schedule.includes('F7')){
-                       $( '#F7' ).text(value);
+                        if(control_day_hour("F7")==true){
+                        course_days_and_hour_arr.push("F7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }if(data.place_in_schedule.includes('F8')){
-                       $( '#F8' ).text(value);
+                       if(control_day_hour("F8")==true){
+                        course_days_and_hour_arr.push("F8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                        alert("burdasınn!!::"+course_days_and_hour_arr[1]);
+                       falatlity_of_courses(course_days_and_hour_arr);
+
+
+                      }
+
+                      function falatlity_of_courses (x){
+                        var arr = x.slice();
+                        alert(arr[1]);
+
+                        var isFatal= arr.includes("wrong");
+                        if(isFatal == true){
+                        alert("Error");
+
+                        }else{
+
+                         var i;
+                         for (i = 0; i < arr.length; i++) {
+                                $( '#'+arr[i]+'menu' ).append("<li>"+value+"</li>");
+                                alert(arr[i]+","+value);
+
+                                var num =$('#'+arr[i]+'menu').find("li").length;
+                                if(num==2){
+                                    $('#'+arr[i]).css("background-color", "red");
+
+                               }
+                        }
+
+
+                      }
+
+
+                    }
+            }
+
+
+            });
+    });
+
+
+
+
+$('.dropdown-container').on('click', '.button', function (){
+
+        let value = $(this).val();
+        console.log(value);
+
+        let token = '{{csrf_token}}';
+          $.ajax({
+                headers: {"X-CSRFToken": token},
+                url: '{% url 'schedule:update_schedule' %}',
+                type: 'POST',
+                data: {
+                    'short_name': value,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+
+                     schedule_available();
+
+                      function control_day_hour(place){
+                          var num =$('#'+place+'menu').find("li").length;
+                           alert("num::"+num);
+
+                          if($("#"+place+"menu:contains("+value+")").length>0){
+                                alert("you have already added it  ");
+                                return false;
+                            }if (num > 1 ) {
+                                    alert("you can not take same place 3 courses");
+                                    return false;
+                              }
+
+                              else {
+                              alert("başarılı");
+                              return true;
+
+
+                           }
+                      }
+
+                      function schedule_available(){
+
+
+                      var course_days_and_hour_arr = [];
+
+                      //MONDAY
+
+
+                    if(data.place_in_schedule.includes('M1')){
+                       if(control_day_hour("M1")==true){
+                        course_days_and_hour_arr.push("M1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('M2')){
+                        if(control_day_hour("M2")==true){
+                        course_days_and_hour_arr.push("M2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('M3')){
+
+                        if(control_day_hour("M3")==true){
+
+                        course_days_and_hour_arr.push("M3");
+                       }else{
+
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('M4')){
+                        if(control_day_hour("M4")==true){
+                        course_days_and_hour_arr.push("M4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('M5')){
+                        if(control_day_hour("M5")==true){
+                        course_days_and_hour_arr.push("M5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('M6') ){
+                        if(control_day_hour("M6")==true){
+                        course_days_and_hour_arr.push("M6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('M7')){
+                       if(control_day_hour("M7")==true){
+                        course_days_and_hour_arr.push("M7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }if(data.place_in_schedule.includes('M8')){
+                        if(control_day_hour("M8")==true){
+                        course_days_and_hour_arr.push("M8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
                      }
 
+
+                     //TUESDAY
+                       if(data.place_in_schedule.includes('T1')){
+                       if(control_day_hour("T1")==true){
+                        course_days_and_hour_arr.push("T1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('T2')){
+                        if(control_day_hour("T2")==true){
+                        course_days_and_hour_arr.push("T2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('T3')){
+                        if(control_day_hour("T3")==true){
+                        course_days_and_hour_arr.push("T3");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('T4')){
+                        if(control_day_hour("T4")==true){
+                        course_days_and_hour_arr.push("T4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('T5')){
+                        if(control_day_hour("T5")==true){
+                        course_days_and_hour_arr.push("T5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('T6')){
+                        if(control_day_hour("T6")==true){
+                        course_days_and_hour_arr.push("T6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('T7')){
+                       if(control_day_hour("T7")==true){
+                        course_days_and_hour_arr.push("T7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }if(data.place_in_schedule.includes('T8')){
+                        if(control_day_hour("T8")==true){
+                        course_days_and_hour_arr.push("T8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+
+
+
+                     //WEDNESDAY
+
+                       if(data.place_in_schedule.includes('W1')){
+                        if(control_day_hour("W1")==true){
+                        course_days_and_hour_arr.push("W1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('W2')){
+                        if(control_day_hour("W2")==true){
+                        course_days_and_hour_arr.push("W2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('W3')){
+                       if(control_day_hour("W3")==true){
+                        course_days_and_hour_arr.push("W3");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('W4')){
+                       if(control_day_hour("W4")==true){
+                        course_days_and_hour_arr.push("W4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('W5')){
+                        if(control_day_hour("W5")==true){
+                        course_days_and_hour_arr.push("W5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+
+                     if(data.place_in_schedule.includes('W6')){
+                        if(control_day_hour("W6")==true){
+                        course_days_and_hour_arr.push("W6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('W7')){
+                        if(control_day_hour("W7")==true){
+                        course_days_and_hour_arr.push("W7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+
+                     }if(data.place_in_schedule.includes('W8')){
+                         if(control_day_hour("W8")==true){
+                        course_days_and_hour_arr.push("W8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+
+
+                     }
+
+
+                      //TH
+
+                       if(data.place_in_schedule.includes('Th1')){
+                        if(control_day_hour("Th1")==true){
+                        course_days_and_hour_arr.push("Th1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('Th2')){
+                        if(control_day_hour("Th2")==true){
+                        course_days_and_hour_arr.push("Th2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('Th3')){
+                        if(control_day_hour("Th3")==true){
+                        course_days_and_hour_arr.push("Th3");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('Th4')){
+                       if(control_day_hour("Th4")==true){
+                        course_days_and_hour_arr.push("Th4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('Th5')){
+                        if(control_day_hour("Th5")==true){
+                        course_days_and_hour_arr.push("Th5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('Th6')){
+                        if(control_day_hour("Th6")==true){
+                        course_days_and_hour_arr.push("Th6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('Th7')){
+                        if(control_day_hour("Th7")==true){
+                        course_days_and_hour_arr.push("Th7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }if(data.place_in_schedule.includes('Th8')){
+                        if(control_day_hour("Th8")==true){
+                        course_days_and_hour_arr.push("Th8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+
+                      //FRIDAY
+
+                       if(data.place_in_schedule.includes('F1')){
+                        if(control_day_hour("F1")==true){
+                        course_days_and_hour_arr.push("F1");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('F2')){
+                        if(control_day_hour("F2")==true){
+                        course_days_and_hour_arr.push("F2");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('F3')){
+                        if(control_day_hour("F3")==true){
+                        course_days_and_hour_arr.push("F3");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('F4')){
+                        if(control_day_hour("F4")==true){
+                        course_days_and_hour_arr.push("F4");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('F5')){
+                        if(control_day_hour("F5")==true){
+                        course_days_and_hour_arr.push("F5");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('F6')){
+                       if(control_day_hour("F6")==true){
+                        course_days_and_hour_arr.push("F6");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                     if(data.place_in_schedule.includes('F7')){
+                        if(control_day_hour("F7")==true){
+                        course_days_and_hour_arr.push("F7");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }if(data.place_in_schedule.includes('F8')){
+                       if(control_day_hour("F8")==true){
+                        course_days_and_hour_arr.push("F8");
+                       }else{
+                        course_days_and_hour_arr.push("wrong");
+                         }
+                     }
+                        alert("burdasınn!!::"+course_days_and_hour_arr[1]);
+                         falatlity_of_courses(course_days_and_hour_arr);
+
+
+                      }
+
+                      function falatlity_of_courses (x){
+                        var arr = x.slice();
+                        alert(arr[1]);
+
+
+                        var isFatal= arr.includes("wrong");
+                        if(isFatal == true){
+                        alert("Error");
+
+                        }else{
+                         let token = '{{csrf_token}}';
+                         var i;
+                         for (i = 0; i < arr.length; i++) {
+                                $( '#'+arr[i]+'menu' ).append("<li>"+value+"</li>");
+
+                                  $.ajax({
+                                          headers: {"X-CSRFToken": token},
+
+                                          url: '{% url 'schedule:add_course_in_schedule' %}',
+                                          type: 'POST',
+                                          data: {
+
+
+                                                    'course_name': value,
+                                                 },
+                                          dataType: 'json',
+                                          success: function (data) {
+                                                                    console.log(data);
+                                                                    }
+                                            });
+
+                                var num =$('#'+arr[i]+'menu').find("li").length;
+                                if(num >=2){
+                                    $('#'+arr[i]).css("background-color", "red");
+
+                               }
+                        }
+
+
+                      }
+
+
+                    }
                 }
             });
     });
@@ -460,6 +1177,7 @@ $('.coursedown-container').on('click', '.button', function (){
     </script>
 
 {% endblock script %}
+
 
 
 </body>
